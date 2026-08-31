@@ -1,5 +1,6 @@
 #include <cstdlib>
 #include <iostream>
+#include <iomanip>
 #include <string>
 
 #include "lexico.h"
@@ -26,14 +27,15 @@ int main(int argc, char *argv[]){
     Lexico lexico(codigo);
 
     cout << "Resultado del Analisis Lexico" << endl << endl;
-    cout << "Simbolo\t\tTipo\t\tValor" << endl;
-    cout << "------------------------------------------------" << endl;
+    cout << left << setw(16) << "Simbolo" << setw(22) << "Tipo" << "Valor" << endl;
+    cout << string(45, '-') << endl;
 
     while ( lexico.simbolo.compare("$") != 0 ){
           lexico.sigSimbolo();
 
-          cout << lexico.simbolo << "\t\t" << lexico.tipoAcad(lexico.tipo)
-               << "\t\t" << lexico.tipo << endl;
+          cout << left << setw(16) << lexico.simbolo
+               << setw(22) << lexico.tipoAcad(lexico.tipo)
+               << lexico.tipo << endl;
     }
 
     cin.get();
