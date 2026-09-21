@@ -1,0 +1,61 @@
+=========================================================
+ Analisis de: entrada3_error_sintactico.txt
+=========================================================
+
+--- Codigo fuente ---
+
+int contador
+
+int main() {
+    contador = 0;
+    while (contador < 10) {
+        contador = contador + 1;
+    }
+    return contador;
+}
+
+
+--- Lista de Tokens (analisis lexico) ---
+
+Linea  Simbolo         Tipo                  Valor
+-------------------------------------------------------
+1      int              Tipo                  4
+1      contador         Identificador         0
+3      int              Tipo                  4
+3      main             Identificador         0
+3      (                Parentesis Izq.       14
+3      )                Parentesis Der.       15
+3      {                Llave Izq.            16
+4      contador         Identificador         0
+4      =                Asignacion            18
+4      0                Entero                1
+4      ;                Punto y Coma          12
+5      while            while                 20
+5      (                Parentesis Izq.       14
+5      contador         Identificador         0
+5      <                Op. Relacional        7
+5      10               Entero                1
+5      )                Parentesis Der.       15
+5      {                Llave Izq.            16
+6      contador         Identificador         0
+6      =                Asignacion            18
+6      contador         Identificador         0
+6      +                Op. Suma              5
+6      1                Entero                1
+6      ;                Punto y Coma          12
+7      }                Llave Der.            17
+8      return           return                21
+8      contador         Identificador         0
+8      ;                Punto y Coma          12
+9      }                Llave Der.            17
+10     $                Fin de la Entrada     23
+
+Analisis lexico: sin errores.
+
+--- Analisis sintactico ---
+
+ERROR SINTACTICO en linea 3: no se esperaba "int" (Tipo)
+  Se esperaba alguno de: Punto y Coma, Coma, Parentesis Izq.
+
+Resultado: EL PROGRAMA FUE RECHAZADO.
+

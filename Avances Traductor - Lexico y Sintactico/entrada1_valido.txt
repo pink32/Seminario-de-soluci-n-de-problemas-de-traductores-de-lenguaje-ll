@@ -1,0 +1,25 @@
+float promedio(int a, int b) {
+    float total;
+    total = (a + b) / 2;
+    return total;
+}
+
+int maximo(int a, int b) {
+    if (a > b) {
+        return a;
+    } else {
+        return b;
+    }
+}
+
+int contador;
+
+int main() {
+    int resultado;
+    contador = 0;
+    while (contador < 10) {
+        contador = contador + 1;
+    }
+    resultado = maximo(contador, 5);
+    return resultado;
+}

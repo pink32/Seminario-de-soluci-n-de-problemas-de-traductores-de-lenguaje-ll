@@ -1,0 +1,68 @@
+=========================================================
+ Analisis de: entrada2_error_lexico.txt
+=========================================================
+
+--- Codigo fuente ---
+
+int contador;
+
+int main() {
+    int x;
+    float y;
+    x = 10;
+    y = 3.;
+    z@ = x + 1;
+    mensaje = "cadena sin cerrar;
+    return x;
+}
+
+
+--- Lista de Tokens (analisis lexico) ---
+
+Linea  Simbolo         Tipo                  Valor
+-------------------------------------------------------
+1      int              Tipo                  4
+1      contador         Identificador         0
+1      ;                Punto y Coma          12
+3      int              Tipo                  4
+3      main             Identificador         0
+3      (                Parentesis Izq.       14
+3      )                Parentesis Der.       15
+3      {                Llave Izq.            16
+4      int              Tipo                  4
+4      x                Identificador         0
+4      ;                Punto y Coma          12
+5      float            Tipo                  4
+5      y                Identificador         0
+5      ;                Punto y Coma          12
+6      x                Identificador         0
+6      =                Asignacion            18
+6      10               Entero                1
+6      ;                Punto y Coma          12
+7      y                Identificador         0
+7      =                Asignacion            18
+7      3.               Error                 -1
+         >> ERROR LEXICO en linea 7: "3." no es un simbolo valido
+7      ;                Punto y Coma          12
+8      z                Identificador         0
+8      @                Error                 -1
+         >> ERROR LEXICO en linea 8: "@" no es un simbolo valido
+8      =                Asignacion            18
+8      x                Identificador         0
+8      +                Op. Suma              5
+8      1                Entero                1
+8      ;                Punto y Coma          12
+9      mensaje          Identificador         0
+9      =                Asignacion            18
+9      "cadena sin cerrar;... Error                 -1
+         >> ERROR LEXICO en linea 9: ""cadena sin cerrar;..." no es un simbolo valido
+12     $                Fin de la Entrada     23
+
+Analisis lexico: 3 error(es) lexico(s) encontrado(s).
+
+--- Analisis sintactico ---
+
+ERROR LEXICO en linea 7: "3." no es un simbolo valido; el analisis sintactico no puede continuar.
+
+Resultado: EL PROGRAMA FUE RECHAZADO.
+

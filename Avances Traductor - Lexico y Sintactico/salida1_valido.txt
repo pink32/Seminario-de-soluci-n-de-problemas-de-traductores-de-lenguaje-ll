@@ -1,0 +1,143 @@
+=========================================================
+ Analisis de: entrada1_valido.txt
+=========================================================
+
+--- Codigo fuente ---
+
+float promedio(int a, int b) {
+    float total;
+    total = (a + b) / 2;
+    return total;
+}
+
+int maximo(int a, int b) {
+    if (a > b) {
+        return a;
+    } else {
+        return b;
+    }
+}
+
+int contador;
+
+int main() {
+    int resultado;
+    contador = 0;
+    while (contador < 10) {
+        contador = contador + 1;
+    }
+    resultado = maximo(contador, 5);
+    return resultado;
+}
+
+
+--- Lista de Tokens (analisis lexico) ---
+
+Linea  Simbolo         Tipo                  Valor
+-------------------------------------------------------
+1      float            Tipo                  4
+1      promedio         Identificador         0
+1      (                Parentesis Izq.       14
+1      int              Tipo                  4
+1      a                Identificador         0
+1      ,                Coma                  13
+1      int              Tipo                  4
+1      b                Identificador         0
+1      )                Parentesis Der.       15
+1      {                Llave Izq.            16
+2      float            Tipo                  4
+2      total            Identificador         0
+2      ;                Punto y Coma          12
+3      total            Identificador         0
+3      =                Asignacion            18
+3      (                Parentesis Izq.       14
+3      a                Identificador         0
+3      +                Op. Suma              5
+3      b                Identificador         0
+3      )                Parentesis Der.       15
+3      /                Op. Multiplicacion    6
+3      2                Entero                1
+3      ;                Punto y Coma          12
+4      return           return                21
+4      total            Identificador         0
+4      ;                Punto y Coma          12
+5      }                Llave Der.            17
+7      int              Tipo                  4
+7      maximo           Identificador         0
+7      (                Parentesis Izq.       14
+7      int              Tipo                  4
+7      a                Identificador         0
+7      ,                Coma                  13
+7      int              Tipo                  4
+7      b                Identificador         0
+7      )                Parentesis Der.       15
+7      {                Llave Izq.            16
+8      if               if                    19
+8      (                Parentesis Izq.       14
+8      a                Identificador         0
+8      >                Op. Relacional        7
+8      b                Identificador         0
+8      )                Parentesis Der.       15
+8      {                Llave Izq.            16
+9      return           return                21
+9      a                Identificador         0
+9      ;                Punto y Coma          12
+10     }                Llave Der.            17
+10     else             else                  22
+10     {                Llave Izq.            16
+11     return           return                21
+11     b                Identificador         0
+11     ;                Punto y Coma          12
+12     }                Llave Der.            17
+13     }                Llave Der.            17
+15     int              Tipo                  4
+15     contador         Identificador         0
+15     ;                Punto y Coma          12
+17     int              Tipo                  4
+17     main             Identificador         0
+17     (                Parentesis Izq.       14
+17     )                Parentesis Der.       15
+17     {                Llave Izq.            16
+18     int              Tipo                  4
+18     resultado        Identificador         0
+18     ;                Punto y Coma          12
+19     contador         Identificador         0
+19     =                Asignacion            18
+19     0                Entero                1
+19     ;                Punto y Coma          12
+20     while            while                 20
+20     (                Parentesis Izq.       14
+20     contador         Identificador         0
+20     <                Op. Relacional        7
+20     10               Entero                1
+20     )                Parentesis Der.       15
+20     {                Llave Izq.            16
+21     contador         Identificador         0
+21     =                Asignacion            18
+21     contador         Identificador         0
+21     +                Op. Suma              5
+21     1                Entero                1
+21     ;                Punto y Coma          12
+22     }                Llave Der.            17
+23     resultado        Identificador         0
+23     =                Asignacion            18
+23     maximo           Identificador         0
+23     (                Parentesis Izq.       14
+23     contador         Identificador         0
+23     ,                Coma                  13
+23     5                Entero                1
+23     )                Parentesis Der.       15
+23     ;                Punto y Coma          12
+24     return           return                21
+24     resultado        Identificador         0
+24     ;                Punto y Coma          12
+25     }                Llave Der.            17
+26     $                Fin de la Entrada     23
+
+Analisis lexico: sin errores.
+
+--- Analisis sintactico ---
+
+
+Resultado: PROGRAMA ACEPTADO (sin errores sintacticos).
+

@@ -1,0 +1,11 @@
+int contador;
+
+int main() {
+    int x;
+    float y;
+    x = 10;
+    y = 3.;
+    z@ = x + 1;
+    mensaje = "cadena sin cerrar;
+    return x;
+}
