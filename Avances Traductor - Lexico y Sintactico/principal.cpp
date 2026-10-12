@@ -11,6 +11,15 @@
 
 using namespace std;
 
+//Estructura usada para almacenar cada token que produce el analizador lexico.
+//El vector<Token> es la "lista de tokens" que pide la practica, y es lo que
+//despues consume el analizador sintactico (en vez de volver a leer el codigo).
+struct Token{
+    int linea;
+    string simbolo;
+    int tipo;
+};
+
 //Para mostrar en pantalla/reporte: recorta saltos de linea y limita el largo,
 //util para simbolos muy largos como una cadena sin cerrar que consumio el resto del archivo.
 string paraMostrar(string simbolo){
@@ -70,26 +79,40 @@ bool cargarTabla(string archivo, vector< vector<int> > &tabla, vector<int> &idRe
     return true;
 }
 
-//Recorre todo el codigo y escribe la lista de tokens en "out". Regresa la cantidad de errores lexicos.
-int listaTokens(string codigo, ostream &out){
+//Corre el analizador lexico sobre todo el codigo y arma la lista de tokens
+//(incluye el token final "$"). Esta es la lista que se le pasa despues al
+//analizador sintactico, tal como lo pide la practica.
+vector<Token> tokenizar(string codigo){
 
     Lexico lexico(codigo);
+    vector<Token> tokens;
+
+    do{
+         lexico.sigSimbolo();
+         tokens.push_back( Token{ lexico.linea, lexico.simbolo, lexico.tipo } );
+    } while ( lexico.simbolo.compare("$") != 0 );
+
+    return tokens;
+}
+
+//Imprime la lista de tokens ya generada por tokenizar(). Regresa la cantidad de errores lexicos.
+int listaTokens(vector<Token> &tokens, ostream &out){
+
+    Lexico lexicoAux; //solo para reutilizar tipoAcad(), no analiza nada
     int errores= 0;
 
     out << "--- Lista de Tokens (analisis lexico) ---" << endl << endl;
     out << left << setw(7) << "Linea" << setw(16) << "Simbolo" << setw(22) << "Tipo" << "Valor" << endl;
     out << string(55, '-') << endl;
 
-    while ( lexico.simbolo.compare("$") != 0 ){
-          lexico.sigSimbolo();
+    for ( size_t i= 0; i < tokens.size(); i++ ){
+          out << left << setw(7) << tokens[i].linea << setw(16) << paraMostrar(tokens[i].simbolo) << " "
+              << setw(22) << lexicoAux.tipoAcad(tokens[i].tipo) << tokens[i].tipo << endl;
 
-          out << left << setw(7) << lexico.linea << setw(16) << paraMostrar(lexico.simbolo) << " "
-              << setw(22) << lexico.tipoAcad(lexico.tipo) << lexico.tipo << endl;
-
-          if ( lexico.tipo == TipoSimbolo::ERROR ){
+          if ( tokens[i].tipo == TipoSimbolo::ERROR ){
                errores++;
-               out << "         >> ERROR LEXICO en linea " << lexico.linea
-                   << ": \"" << paraMostrar(lexico.simbolo) << "\" no es un simbolo valido" << endl;
+               out << "         >> ERROR LEXICO en linea " << tokens[i].linea
+                   << ": \"" << paraMostrar(tokens[i].simbolo) << "\" no es un simbolo valido" << endl;
           }
     }
 
@@ -102,14 +125,17 @@ int listaTokens(string codigo, ostream &out){
 
 /*
  Algoritmo general de analisis sintactico LR(1), con pila de objetos (ElementoPila*)
- y la tabla cargada desde un archivo .lr. Reporta errores lexicos y sintacticos con
- numero de linea, y en un error sintactico indica que simbolos se esperaban.
+ y la tabla cargada desde un archivo .lr. Consume la lista de tokens que ya produjo
+ el analizador lexico (tokenizar()), en vez de volver a leer el codigo fuente.
+ Reporta errores lexicos y sintacticos con numero de linea, y en un error sintactico
+ indica que simbolos se esperaban.
 */
-bool analizarLR(string entrada, vector< vector<int> > &tabla, vector<int> &idReglas,
+bool analizarLR(vector<Token> &tokens, vector< vector<int> > &tabla, vector<int> &idReglas,
                  vector<int> &lonReglas, vector<string> &nombreReglas, ostream &out){
 
     Pila pila;
-    Lexico lexico(entrada);
+    Lexico lexicoAux; //solo para reutilizar tipoAcad(), no analiza nada
+    size_t i= 0; //indice del token actual dentro de la lista
     int fila, columna, accion;
     bool aceptacion= false;
     bool error= false;
@@ -118,27 +144,28 @@ bool analizarLR(string entrada, vector< vector<int> > &tabla, vector<int> &idReg
 
     pila.push( new Terminal(TipoSimbolo::PESOS, "$") );
     pila.push( new Estado(0) );
-    lexico.sigSimbolo();
 
     while ( !aceptacion && !error ){
 
-          if ( lexico.tipo == TipoSimbolo::ERROR ){
-               out << "ERROR LEXICO en linea " << lexico.linea
-                   << ": \"" << paraMostrar(lexico.simbolo) << "\" no es un simbolo valido; "
+          Token &actual= tokens[i];
+
+          if ( actual.tipo == TipoSimbolo::ERROR ){
+               out << "ERROR LEXICO en linea " << actual.linea
+                   << ": \"" << paraMostrar(actual.simbolo) << "\" no es un simbolo valido; "
                    << "el analisis sintactico no puede continuar." << endl;
                error= true;
                break;
           }
 
           fila= pila.top()->getValor();
-          columna= lexico.tipo;
+          columna= actual.tipo;
           accion= tabla[fila][columna];
 
           if ( accion > 0 ){
                //desplazamiento
-               pila.push( new Terminal(lexico.tipo, lexico.simbolo) );
+               pila.push( new Terminal(actual.tipo, actual.simbolo) );
                pila.push( new Estado(accion) );
-               lexico.sigSimbolo();
+               i++; //siguiente token de la lista
           }
           else
           if ( accion < 0 ){
@@ -162,15 +189,15 @@ bool analizarLR(string entrada, vector< vector<int> > &tabla, vector<int> &idReg
           }
           else{
                //celda vacia => error sintactico
-               out << "ERROR SINTACTICO en linea " << lexico.linea << ": no se esperaba \""
-                   << paraMostrar(lexico.simbolo) << "\" (" << lexico.tipoAcad(lexico.tipo) << ")" << endl;
+               out << "ERROR SINTACTICO en linea " << actual.linea << ": no se esperaba \""
+                   << paraMostrar(actual.simbolo) << "\" (" << lexicoAux.tipoAcad(actual.tipo) << ")" << endl;
 
                out << "  Se esperaba alguno de: ";
                bool alguno= false;
                for ( int col= 0; col <= TipoSimbolo::PESOS; col++ ){
                      if ( tabla[fila][col] != 0 ){
                           if (alguno) out << ", ";
-                          out << lexico.tipoAcad(col);
+                          out << lexicoAux.tipoAcad(col);
                           alguno= true;
                      }
                }
@@ -206,8 +233,9 @@ void procesarArchivo(string rutaEntrada, string rutaSalida, vector< vector<int> 
 
     reporte << "--- Codigo fuente ---" << endl << endl << codigo << endl << endl;
 
-    listaTokens(codigo, reporte);
-    analizarLR(codigo, tabla, idReglas, lonReglas, nombreReglas, reporte);
+    vector<Token> tokens= tokenizar(codigo);
+    listaTokens(tokens, reporte);
+    analizarLR(tokens, tabla, idReglas, lonReglas, nombreReglas, reporte);
 
     cout << reporte.str();
 
